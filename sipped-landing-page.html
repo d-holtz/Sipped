@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sipped — Your nights. Tracked. Legendary.</title>
+<meta name="description" content="The social app for your nights out. Log sessions, own your neighborhood, compete with your crew. Join the waitlist.">
+<meta property="og:title" content="Sipped — Your nights. Tracked. Legendary.">
+<meta property="og:description" content="Strava for your night out. Log sessions, own territory, compete with your crew.">
+<meta property="og:image" content="https://sipped.app/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0A0D14;
+    --surface:   #111620;
+    --surface2:  #181E2C;
+    --amber:     #F59E0B;
+    --amber-lt:  #FBBF24;
+    --amber-dk:  #D97706;
+    --cream:     #F5F0E8;
+    --muted:     #9A9288;
+    --faint:     #6B6560;
+    --border:    rgba(245,158,11,0.12);
+    --glow:      rgba(245,158,11,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,13,20,0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .nav-logo-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--amber);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-cta {
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+
+  .nav-cta:hover { background: var(--amber-lt); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 24px 80px;
+    overflow: hidden;
+  }
+
+  /* Radial glow behind the hero */
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(245,158,11,0.10) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245,158,11,0.10);
+    border: 1px solid rgba(245,158,11,0.25);
+    color: var(--amber-lt);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-wordmark {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: clamp(72px, 16vw, 140px);
+    line-height: 0.95;
+    letter-spacing: -4px;
+    color: var(--amber);
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-tagline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(20px, 4vw, 30px);
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 16px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-sub {
+    font-size: clamp(15px, 2.5vw, 18px);
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 48px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  /* ── FORM ── */
+  .form-wrap {
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto 20px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .email-form {
+    display: flex;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 100px;
+    padding: 6px 6px 6px 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .email-form:focus-within {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+  }
+
+  .email-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    min-width: 0;
+  }
+
+  .email-input::placeholder { color: var(--faint); }
+
+  .submit-btn {
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .submit-btn:hover { background: var(--amber-lt); transform: scale(1.03); }
+  .submit-btn:active { transform: scale(0.98); }
+
+  .form-note {
+    font-size: 12px;
+    color: var(--faint);
+    animation: fadeUp 0.6s 0.45s ease both;
+  }
+
+  .success-msg {
+    display: none;
+    background: rgba(46,204,113,0.1);
+    border: 1px solid rgba(46,204,113,0.3);
+    color: #58D68D;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0 0 80px;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--amber);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── FEATURES ── */
+  section { position: relative; z-index: 1; }
+
+  .section-label {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 900;
+    text-align: center;
+    color: var(--cream);
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+    line-height: 1.1;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto 56px;
+  }
+
+  .features {
+    padding: 80px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(245,158,11,0.35);
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+
+  .feature-body {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    padding: 80px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber), transparent);
+    opacity: 0.3;
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 16px 32px;
+    position: relative;
+  }
+
+  .step-num {
+    width: 56px;
+    height: 56px;
+    background: var(--surface2);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--amber);
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .step-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── MOCK SESSION CARD ── */
+  .mockup-section {
+    padding: 80px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .mockup-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  @media (max-width: 700px) {
+    .mockup-inner { grid-template-columns: 1fr; }
+    .steps::before { display: none; }
+  }
+
+  .mockup-copy .section-title,
+  .mockup-copy .section-label,
+  .mockup-copy .section-sub { text-align: left; }
+
+  .mockup-copy .section-sub { margin-left: 0; }
+
+  .mock-card {
+    background: var(--surface);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+
+  .mock-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .mock-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 13px;
+    color: var(--bg);
+    flex-shrink: 0;
+  }
+
+  .mock-name { font-size: 13px; font-weight: 500; color: var(--cream); }
+  .mock-time { font-size: 11px; color: var(--faint); }
+
+  .mock-badge {
+    margin-left: auto;
+    background: rgba(245,158,11,0.15);
+    color: var(--amber);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid rgba(245,158,11,0.2);
+  }
+
+  .mock-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .mock-stats {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .mock-stat { font-size: 12px; color: var(--muted); }
+
+  .mock-spots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .mock-spot {
+    font-size: 11px;
+    background: rgba(245,158,11,0.1);
+    color: var(--amber);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .mock-footer {
+    display: flex;
+    gap: 16px;
+    border-top: 1px solid rgba(245,158,11,0.1);
+    padding-top: 14px;
+  }
+
+  .mock-toast {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--amber);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .mock-toast:hover { opacity: 0.7; }
+
+  .mock-comments { font-size: 12px; color: var(--faint); }
+
+  /* Crown badge */
+  .mock-crown {
+    background: rgba(245,158,11,0.12);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mock-crown-icon { font-size: 18px; }
+
+  .mock-crown-text { font-size: 12px; color: var(--amber); font-weight: 500; }
+  .mock-crown-sub { font-size: 11px; color: var(--faint); }
+
+  /* ── VOCABULARY ── */
+  .vocab-section {
+    padding: 80px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .vocab-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    transition: border-color 0.2s;
+  }
+
+  .vocab-item:hover { border-color: rgba(245,158,11,0.3); }
+
+  .vocab-icon { font-size: 22px; flex-shrink: 0; }
+  .vocab-term { color: var(--amber); font-weight: 500; font-size: 14px; font-family: 'Playfair Display', serif; }
+  .vocab-def { color: var(--faint); font-size: 12px; margin-top: 2px; }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    padding: 100px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(245,158,11,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .final-cta > * { position: relative; z-index: 1; }
+
+  .cta-big {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 8vw, 72px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 16px;
+  }
+
+  .cta-big span { color: var(--amber); }
+
+  .cta-sub {
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--faint);
+    position: relative;
+    z-index: 1;
+  }
+
+  footer a { color: var(--amber); text-decoration: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(to right, var(--amber-dk), var(--amber));
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  /* ── TOAST COUNT ANIMATION ── */
+  @keyframes pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+
+  .toast-animate { animation: pop 0.3s ease; }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .email-form { flex-direction: column; padding: 12px; border-radius: 16px; }
+    .submit-btn { width: 100%; padding: 14px; border-radius: 12px; }
+    .stats-bar { gap: 24px; }
+    nav { padding: 0 16px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-icon">🥂</span>
+    <span class="nav-logo-text">SIPPED</span>
+  </a>
+  <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span>🏃</span> From the runners who go out after the race
+  </div>
+
+  <h1 class="hero-wordmark">SIPPED</h1>
+
+  <p class="hero-tagline">Strava for your night out.</p>
+
+  <p class="hero-sub">
+    Log your sessions. Own your neighborhood. Compete with your Crew.
+    The first social app built for the bar stool.
+  </p>
+
+  <div class="form-wrap" id="waitlist">
+    <form class="email-form" id="heroForm">
+      <input
+        class="email-input"
+        type="email"
+        placeholder="your@email.com"
+        required
+        id="heroEmail"
+      />
+      <button type="submit" class="submit-btn">Join the Waitlist 🥂</button>
+    </form>
+    <div class="success-msg" id="heroSuccess">
+      🥂 You're on the list! We'll be in touch when we launch in your city.
+    </div>
+  </div>
+
+  <p class="form-note">🏙️ Launching first in select cities · No spam · Unsubscribe anytime</p>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats-bar reveal">
+  <div class="stat-item">
+    <span class="stat-num">90</span>
+    <span class="stat-label">Day Rolling Crowns</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">1</span>
+    <span class="stat-label">Reaction — The Toast 🥂</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">∞</span>
+    <span class="stat-label">Territory to Claim</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">0</span>
+    <span class="stat-label">Dislikes. Ever.</span>
+  </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section class="features reveal">
+  <div class="section-label">What it does</div>
+  <div class="divider"></div>
+  <h2 class="section-title">Your nights deserve a highlight reel.</h2>
+  <p class="section-sub">Every great night out is a story. Sipped gives it the platform it deserves.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🌃</span>
+      <h3 class="feature-title">Sessions</h3>
+      <p class="feature-body">Start a Session when the night begins. Name it, log drinks, check in to venues. End the night with a shareable recap card — your personal highlight reel.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">👑</span>
+      <h3 class="feature-title">The Regular</h3>
+      <p class="feature-body">Every bar has a leaderboard. The person with the most check-ins in 90 days earns The Regular crown. It's yours to claim — and yours to lose.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🏴</span>
+      <h3 class="feature-title">Territory</h3>
+      <p class="feature-body">Every neighborhood has an owner. Check in across a district and climb the Zone leaderboard. The Territory Map shows who rules your city in real time.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">👥</span>
+      <h3 class="feature-title">Crews</h3>
+      <p class="feature-body">Form a Crew with your friends and compete together. Crew leaderboards, shared feeds, and Crew vs. Crew rivalries. Going out has never been more competitive.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🗺️</span>
+      <h3 class="feature-title">Crawls</h3>
+      <p class="feature-body">Plan a bar crawl route, share it publicly, and let others run it too. Every Crawl has its own leaderboard. Classic Crawls in your city get a verified badge.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🥂</span>
+      <h3 class="feature-title">Toasts</h3>
+      <p class="feature-body">One reaction. Always positive. Like Strava's Kudos — but for the bar stool. No dislikes. No drama. Just a culture of celebrating great nights.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how reveal">
+  <div class="section-label">How it works</div>
+  <div class="divider"></div>
+  <h2 class="section-title">Dead simple. Wildly addictive.</h2>
+  <p class="section-sub">Four steps from your couch to owning your city's nightlife.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3 class="step-title">Start a Session</h3>
+      <p class="step-body">Name your night. Pick your Session type. Hit go. The timer starts — your legend begins.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3 class="step-title">Log & Check In</h3>
+      <p class="step-body">One tap to log a drink. One tap to check in to a Spot. Every visit adds to your leaderboard standing.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3 class="step-title">Claim Your Crown</h3>
+      <p class="step-body">Become The Regular at your local. Earn Zone Crowns across your neighborhood. Own your territory.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3 class="step-title">Share the Night</h3>
+      <p class="step-body">Your Session recap card is built automatically. Beautiful, shareable, legendary.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── MOCK CARD ── -->
+<section class="mockup-section reveal">
+  <div class="mockup-inner">
+    <div class="mockup-copy">
+      <div class="section-label">The Session Card</div>
+      <div class="divider" style="margin-left:0;"></div>
+      <h2 class="section-title" style="font-size: clamp(26px,4vw,38px);">Every night out becomes a story worth telling.</h2>
+      <p class="section-sub" style="font-size:15px;">Your Session recap is generated automatically — beautifully designed, formatted for Instagram Stories, and ready to share the moment the night ends.</p>
+    </div>
+
+    <div class="mock-card">
+      <div class="mock-user">
+        <div class="mock-avatar">JW</div>
+        <div>
+          <div class="mock-name">@jakewilson</div>
+          <div class="mock-time">2 hours ago</div>
+        </div>
+        <span class="mock-badge">Post-Race Beers</span>
+      </div>
+
+      <p class="mock-title">"Marathon done. Beers earned. Zero regrets. 🍺"</p>
+
+      <div class="mock-stats">
+        <span class="mock-stat">🍺 6 drinks</span>
+        <span class="mock-stat">📍 3 spots</span>
+        <span class="mock-stat">⏱ 4h 20m</span>
+        <span class="mock-stat">👥 5 crew</span>
+      </div>
+
+      <div class="mock-spots">
+        <span class="mock-spot">The Whistler</span>
+        <span class="mock-spot">Longman & Eagle</span>
+        <span class="mock-spot">Piece</span>
+      </div>
+
+      <div class="mock-crown">
+        <span class="mock-crown-icon">👑</span>
+        <div>
+          <div class="mock-crown-text">New Regular — The Whistler</div>
+          <div class="mock-crown-sub">12 visits in 90 days · You own this spot</div>
+        </div>
+      </div>
+
+      <div class="mock-footer">
+        <span class="mock-toast" id="toastBtn">🥂 <span id="toastCount">14</span> Toasts</span>
+        <span class="mock-comments">💬 3 tasting notes</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VOCABULARY ── -->
+<section class="vocab-section reveal">
+  <div class="section-label">The Language</div>
+  <div class="divider"></div>
+  <h2 class="section-title">A culture, not just an app.</h2>
+  <p class="section-sub">Like Strava's KOM and Kudos culture — Sipped has its own vocabulary. Use it. Own it.</p>
+
+  <div class="vocab-grid">
+    <div class="vocab-item">
+      <span class="vocab-icon">🌃</span>
+      <div>
+        <div class="vocab-term">Session</div>
+        <div class="vocab-def">A logged night out — your core activity</div>
+      </div>
+    </div>
+    <div class="vocab-item">
+      <span class="vocab-icon">👑</span>
+      <div>
+        <div class="vocab-term">The Regular</div>
+        <div class="vocab-def">Most visits to a Spot in 90 days</div>
+      </div>
+    </div>
+    <div class="vocab-item">
+      <span class="vocab-icon">🏆</span>
+      <div>
+        <div class="vocab-term">The Landlord</div>
+        <div class="vocab-def">Best single session at a Spot</div>
+      </div>
+    </div>
+    <div class="vocab-item">
+      <span class="vocab-icon">🥂</span>
+      <div>
+        <div class="vocab-term">Toast</div>
+        <div class="vocab-def">The one reaction. Always positive.</div>
+      </div>
+    </div>
+    <div class="vocab-item">
+      <span class="vocab-icon">🏴</span>
+      <div>
+        <div class="vocab-term">Zone Crown</div>
+        <div class="vocab-def">You own a neighborhood's nightlife</div>
+      </div>
+    </div>
+    <div class="vocab-item">
+      <span class="vocab-icon">💧</span>
+      <div>
+        <div class="vocab-term">Dry Run</div>
+        <div class="vocab-def">Out but not drinking — still counts for everything</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ── -->
+<section class="final-cta reveal">
+  <p class="cta-big">Your city has a<br><span>Regular</span>.<br>Is it you?</p>
+  <p class="cta-sub">Join the waitlist. Be first when we launch in your city.</p>
+
+  <div class="form-wrap">
+    <form class="email-form" id="bottomForm">
+      <input
+        class="email-input"
+        type="email"
+        placeholder="your@email.com"
+        required
+        id="bottomEmail"
+      />
+      <button type="submit" class="submit-btn">Join the Waitlist 🥂</button>
+    </form>
+    <div class="success-msg" id="bottomSuccess">
+      🥂 You're on the list! We'll be in touch when we launch in your city.
+    </div>
+  </div>
+  <p class="form-note" style="margin-top:16px;">No spam · No pressure · Just your city's nightlife, leveled up</p>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p style="margin-bottom:10px; font-size:20px; font-family: 'Playfair Display', serif; color: var(--amber); font-weight:900; letter-spacing:-0.5px;">🥂 SIPPED</p>
+  <p>Your nights. Tracked. Legendary.</p>
+  <p style="margin-top:16px;">
+    <a href="mailto:hello@sipped.app">hello@sipped.app</a>
+    &nbsp;·&nbsp;
+    <a href="#">Instagram</a>
+    &nbsp;·&nbsp;
+    <a href="#">TikTok</a>
+  </p>
+  <p style="margin-top:16px; font-size:11px; color:#444;">© 2026 Sipped. Drink responsibly. 21+ only.</p>
+</footer>
+
+<script>
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // ── FORM HANDLING ──
+  function handleForm(formId, emailId, successId) {
+    document.getElementById(formId).addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById(emailId).value;
+      if (!email) return;
+      // ── CONNECT YOUR EMAIL SERVICE HERE ──
+      // Replace this with your MailerLite / Mailchimp / etc. API call
+      // For now it just shows the success message
+      this.style.display = 'none';
+      document.getElementById(successId).style.display = 'block';
+      console.log('New signup:', email);
+      // Example MailerLite fetch:
+      // fetch('https://api.mailerlite.com/api/v2/subscribers', {
+      //   method: 'POST',
+      //   headers: { 'X-MailerLite-ApiKey': 'YOUR_KEY', 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, resubscribe: true })
+      // });
+    });
+  }
+
+  handleForm('heroForm', 'heroEmail', 'heroSuccess');
+  handleForm('bottomForm', 'bottomEmail', 'bottomSuccess');
+
+  // ── TOAST INTERACTION ──
+  let toastCount = 14;
+  let toasted = false;
+  document.getElementById('toastBtn').addEventListener('click', function() {
+    if (!toasted) {
+      toastCount++;
+      document.getElementById('toastCount').textContent = toastCount;
+      this.classList.add('toast-animate');
+      setTimeout(() => this.classList.remove('toast-animate'), 300);
+      toasted = true;
+      this.style.opacity = '0.6';
+    }
+  });
+</script>
+</body>
+</html>
